@@ -49,8 +49,10 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 	}
 	
-	public void test() {
-		_testCommand = new DriveWithController();  
+	public void testInit() {
+		System.out.println("Start Test");
+		_testCommand = new DriveWithController();
+		_testCommand.start();
 		while(isTest() && isEnabled()) {
 			LiveWindow.run();
 			Timer.delay(0.1);

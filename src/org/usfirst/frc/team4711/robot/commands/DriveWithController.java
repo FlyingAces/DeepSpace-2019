@@ -15,6 +15,7 @@ public class DriveWithController extends Command {
 	
 	@Override
 	protected void initialize() {
+		System.out.println("Cheese");
     }
 	
 	@Override

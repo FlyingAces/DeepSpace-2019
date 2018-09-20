@@ -7,14 +7,20 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class DriveTrain extends Subsystem {
 	private static DriveTrain _instance; 
+	
+	public ADXRS450_Gyro _gyro;
 	
 	private DifferentialDrive _wheels;
 	
 	private DriveTrain() {
 		super("DriveTrain");
+		
+		_gyro = new ADXRS450_Gyro();
+		LiveWindow.addSensor("DriveTrain", "gyro", _gyro);
 		
 		WPI_TalonSRX leftMaster = new WPI_TalonSRX(RobotMap.Talon.LEFT_BACK.getChannel());
 		LiveWindow.addActuator("DriveTrain", "leftMaster", leftMaster);
@@ -32,6 +38,10 @@ public class DriveTrain extends Subsystem {
 			_instance = new DriveTrain();
 		
 		return _instance;
+	}
+	
+	public double gyroAngle() {
+		return _gyro.getAngle();
 	}
 		
 	@Override
