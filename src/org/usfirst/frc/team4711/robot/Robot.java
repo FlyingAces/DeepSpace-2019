@@ -1,7 +1,7 @@
 //Package declaration
 package org.usfirst.frc.team4711.robot;
 
-import org.usfirst.frc.team4711.robot.commands.DriveWithController;
+import org.usfirst.frc.team4711.robot.commands.CommandByController;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -21,6 +21,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void robotInit() {
+		_teleopCommand = new CommandByController();
 
 	}
 
@@ -51,7 +52,7 @@ public class Robot extends IterativeRobot {
 	
 	public void testInit() {
 		System.out.println("Start Test");
-		_testCommand = new DriveWithController();
+		_testCommand = new CommandByController();
 		_testCommand.start();
 		while(isTest() && isEnabled()) {
 			LiveWindow.run();
