@@ -1,6 +1,9 @@
 package org.usfirst.frc.team4711.config;
 
 public class RobotMap {
+	
+	public static final double SPEED_MULTIPLIER = 1.2;
+	
 	public static enum Talon {
 		LEFT_FRONT(4),
 		LEFT_BACK(5),
@@ -15,6 +18,24 @@ public class RobotMap {
 		
 		public int getChannel() {
 			return _channel;
+		}
+	}
+	
+	public static enum Measurement {
+		//width of inside of track
+		ROBOT_WIDTH(21.875),
+		ROBOT_LENGTH(31.0),
+		ROBOT_HEIGHT(15.5),
+		WHEEL_DIAMETER(3.53);
+		
+		private double _inches;
+		
+		private Measurement(double inches) {
+			_inches = inches;
+		}
+		
+		public double getInches() {
+			return _inches;
 		}
 	}
 	

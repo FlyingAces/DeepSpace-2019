@@ -27,9 +27,9 @@ public class CommandByController extends Command{
 	
 	@Override
 	protected void execute() {
-    	double driveSpeed = _controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_RT.getChannel()) -
-    			_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_LT.getChannel());
-		double driveAngle = _controller.getController().getRawAxis(RobotMap.Controller.AXIS_LEFT_X.getChannel());
+    	double driveSpeed = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_RT.getChannel()) -
+    			_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_LT.getChannel()));
+		double driveAngle = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_LEFT_X.getChannel()));
 
     	_drive.arcadeDrive(driveSpeed, driveAngle);
     }

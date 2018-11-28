@@ -2,7 +2,7 @@
 package org.usfirst.frc.team4711.robot;
 
 import org.usfirst.frc.team4711.robot.commands.CommandByController;
-import org.usfirst.frc.team4711.robot.commands.DriveStraight;
+import org.usfirst.frc.team4711.robot.commands.Patrol;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
 	
 	public void robotInit() {
 		_teleopCommand = new CommandByController();
-		_autonomousCommand = new DriveStraight(DriveStraight.Direction.FORWARD);
+		_autonomousCommand = new Patrol();
 
 	}
 
