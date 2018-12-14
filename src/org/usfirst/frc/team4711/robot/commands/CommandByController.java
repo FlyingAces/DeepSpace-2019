@@ -23,10 +23,13 @@ public class CommandByController extends Command{
 	@Override
 	protected void initialize() {
 		System.out.println("CommandByController initialized");
-    }
+        _controller.setBButtonOnPressed(new LauncherShoot());
+	}
+	
 	
 	@Override
 	protected void execute() {
+		System.out.println("Gyro angle: " + _drive.gyroAngle());
     	double driveSpeed = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_RT.getChannel()) -
     			_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_LT.getChannel()));
 		double driveAngle = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_LEFT_X.getChannel()));

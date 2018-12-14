@@ -5,6 +5,9 @@ public class RobotMap {
 	public static final double SPEED_MULTIPLIER = 1.2;
 	
 	public static enum Talon {
+		MASTER_SHOOTER(1),
+		SLAVE_SHOOTER(2),
+		INTAKE(3),
 		LEFT_FRONT(4),
 		LEFT_BACK(5),
 		RIGHT_FRONT(7),

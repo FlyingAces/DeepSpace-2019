@@ -102,7 +102,7 @@ public class DriveTrainSubsystem extends Subsystem {
 	}
 	
 	public double gyroAngle() {
-		return _gyro.getAngle();
+		return (_gyro.isConnected())?_gyro.getAngle() : 2.0;
 	}
 		
 	@Override
