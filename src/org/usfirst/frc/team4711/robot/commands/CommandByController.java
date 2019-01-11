@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4711.robot.commands;
 
 import org.usfirst.frc.team4711.config.RobotMap;
+import org.usfirst.frc.team4711.robot.subsystems.CameraSubsystem;
 import org.usfirst.frc.team4711.robot.subsystems.ControllerSubsystem;
 import org.usfirst.frc.team4711.robot.subsystems.DriveTrainSubsystem;
 
@@ -9,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class CommandByController extends Command{
 	private DriveTrainSubsystem _drive;
 	private ControllerSubsystem _controller; 
+	private CameraSubsystem _camera;
 	
 	public CommandByController() {
 		super("CommandByController");
@@ -18,11 +20,15 @@ public class CommandByController extends Command{
 		
 		_controller = ControllerSubsystem.getInstance();
 		requires(_controller);
+		
+		_camera = CameraSubsystem.getInstance();
+		requires(_camera);
 	}
 
 	@Override
 	protected void initialize() {
 		System.out.println("CommandByController initialized");
+		_camera.startVisionFront();
     }
 	
 	@Override
@@ -38,5 +44,16 @@ public class CommandByController extends Command{
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	protected void end() {
+		_drive.tankDrive(0, 0);
+		_camera.endVisionFront();
+	}
+	
+	@Override
+	protected void interrupted() {
+		end();
 	}
 }

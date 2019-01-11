@@ -2,6 +2,7 @@ package org.usfirst.frc.team4711.config;
 
 public class RobotMap {
 	
+	
 	public static final double SPEED_MULTIPLIER = 1.2;
 	
 	public static enum Talon {
@@ -61,6 +62,11 @@ public class RobotMap {
 		public int getChannel() {
 			return _channel;
 		}
+		
 	}
-
+	
+	public static final int CAMERA_FRONT = 0;
+	//only can use 160x120, 320x240, 640x480
+	public static final int CAMERA_IMG_WIDTH = 320;
+	public static final int CAMERA_IMG_HEIGHT = 240;
 }
