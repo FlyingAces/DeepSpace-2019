@@ -19,17 +19,8 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 
 public class CameraSubsystem extends Subsystem {
-	public static enum Target {
-		GEAR, BASKET;
-	}
 
-	private Thread visionThreadFront;
-	
-	private CvSink cvSinkFront;
-	private CvSource cvSourceFront;
-	
-	private Object lock;
-	private double positionX;
+	private CvSink cvSink;
 	
 	private static CameraSubsystem instance;
 	
@@ -41,11 +32,7 @@ public class CameraSubsystem extends Subsystem {
 		cameraFront.setBrightness(25);
 		
 		
-		cvSinkFront = CameraServer.getInstance().getVideo(cameraFront);
-		cvSourceFront = CameraServer.getInstance().putVideo("RobotEyeFront", RobotMap.CAMERA_IMG_WIDTH, RobotMap.CAMERA_IMG_HEIGHT);
-		
-		lock = new Object();
-		positionX = 1.0;
+		cvSink = CameraServer.getInstance().getVideo(cameraFront);
 	}
 	
 	@Override
@@ -59,86 +46,10 @@ public class CameraSubsystem extends Subsystem {
 		return instance;
 	}
 	
-	public void startVisionFront(){
-		synchronized (lock) {
-        	positionX = 1.0;
-        }
-		
-		visionThreadFront = new Thread(() -> {
-			Mat source = new Mat();
-			
-			while(!Thread.interrupted()){
-				if(cvSinkFront.grabFrame(source)==0){
-					cvSourceFront.notifyError(cvSinkFront.getError());
-					continue;
-				}
-				
-				Mat rotationMatrix = Imgproc.getRotationMatrix2D(new Point(RobotMap.CAMERA_IMG_WIDTH * .5, RobotMap.CAMERA_IMG_HEIGHT * .5), 180, 1);
-				Imgproc.warpAffine(source, source, rotationMatrix, new Size(source.cols(), source.rows()));
-				
-				 /**
-				gripPipeline.process(source);
-				if (!gripPipeline.filterContoursOutput().isEmpty()){
-					Rect r = new Rect(RobotMap.CAMERA_IMG_WIDTH, RobotMap.CAMERA_IMG_HEIGHT, 0, 0);
-					for(MatOfPoint matOfPoint : gripPipeline.filterContoursOutput()) {
-						Rect temp = Imgproc.boundingRect(matOfPoint);
-						r.x = Math.min(r.x, temp.x);
-						r.y = Math.min(r.y, temp.y);
-						r.width = Math.max(r.x + r.width, temp.x + temp.width) - r.x;
-						r.height = Math.max(r.y + r.height, temp.y + temp.height) - r.y;
-					}
-					
-					Imgproc.rectangle(
-							source, 
-							new Point(r.x,r.y), 
-							new Point(r.x + r.width, r.y + r.height), 
-							new Scalar(255, 255, 255), 
-							2);
-					
-		            double rectCenterX = r.x + (r.width / 2);
-		            double camImgCenterX = RobotMap.CAMERA_IMG_WIDTH / 2;
-		            
-		            synchronized (lock) {
-		            	positionX = -((camImgCenterX - rectCenterX) / camImgCenterX);
-		            }
-				}
-				
-				Imgproc.line(
-						source, 
-						new Point(RobotMap.CAMERA_IMG_WIDTH / 2, 0), 
-						new Point(RobotMap.CAMERA_IMG_WIDTH / 2, RobotMap.CAMERA_IMG_HEIGHT), 
-						new Scalar(255,255,255));
-				
-				Imgproc.putText(
-						source, 
-						"PositionX : " + getTargetCenterX(), 
-						new Point(10, 10), 
-						Core.FONT_HERSHEY_COMPLEX, 
-						.5, 
-						new Scalar(255,255,255),
-						1);
-				*/
-				cvSourceFront.putFrame(source);
-			}
-		});
-		
-		visionThreadFront.start();
-	}
-	
-	public void endVisionFront() {
-		if(visionThreadFront.getState() == Thread.State.RUNNABLE)
-			visionThreadFront.interrupt();
-	}
-	
-	//-1 <= value => 1, 0 been centered
-	public double getTargetCenterX(){
-		double targetCenterX;
-		synchronized(lock){
-			targetCenterX = positionX;
-		}
-		
-		return targetCenterX;
-		
+	public Mat getFrontCameraPicture() {
+		Mat image = new Mat();
+		cvSink.grabFrame(image);
+		return image;
 	}
 
 }

@@ -28,7 +28,6 @@ public class CommandByController extends Command{
 	@Override
 	protected void initialize() {
 		System.out.println("CommandByController initialized");
-		_camera.startVisionFront();
     }
 	
 	@Override
@@ -49,7 +48,6 @@ public class CommandByController extends Command{
 	@Override
 	protected void end() {
 		_drive.tankDrive(0, 0);
-		_camera.endVisionFront();
 	}
 	
 	@Override
