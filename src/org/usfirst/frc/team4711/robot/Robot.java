@@ -4,6 +4,7 @@ package org.usfirst.frc.team4711.robot;
 import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.robot.commands.Patrol;
 import org.usfirst.frc.team4711.robot.ui.UI;
+import org.usfirst.frc.team4711.util.RobotArmCalculations;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,13 +20,17 @@ public class Robot extends IterativeRobot {
 	private Command _teleopCommand;
 	private Command _testCommand;
 	
+	private RobotArmCalculations _robotArmCalculations;
+	
 	public Robot() {
 	}
 	
 	public void robotInit() {
 		_teleopCommand = new CommandByController();
 		_autonomousCommand = new Patrol();
-		UI.getInstance().start();
+		_robotArmCalculations = new RobotArmCalculations();
+		
+		//UI.getInstance().start();
 	}
 
 	public void teleopInit() {
@@ -38,6 +43,8 @@ public class Robot extends IterativeRobot {
 	
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		_robotArmCalculations.update();
+		_robotArmCalculations.sendInfo();
 	}
 	
 	public void autonomousInit() {
