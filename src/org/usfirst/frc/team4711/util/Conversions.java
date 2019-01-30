@@ -21,4 +21,12 @@ public class Conversions {
 		double lengthOfArc = (angle / 360.0) * RobotMap.Measurement.ROBOT_WIDTH.getInches() * Math.PI;
 		return inchToEncoderPosition(lengthOfArc);
 	}
+	
+	public static double radianToDegree(double radian) {
+		return (radian * 180) / Math.PI;
+	}
+	
+	public static double degreeToRadian(double degree) {
+		return (degree * Math.PI) / 180;
+	}
 }
