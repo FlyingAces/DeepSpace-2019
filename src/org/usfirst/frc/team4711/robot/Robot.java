@@ -1,6 +1,7 @@
 //Package declaration
 package org.usfirst.frc.team4711.robot;
 
+import org.usfirst.frc.team4711.robot.commands.ArmAndDriveControl;
 import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.robot.commands.Patrol;
 import org.usfirst.frc.team4711.robot.ui.UI;
@@ -20,15 +21,12 @@ public class Robot extends IterativeRobot {
 	private Command _teleopCommand;
 	private Command _testCommand;
 	
-	private RobotArmCalculations _robotArmCalculations;
-	
 	public Robot() {
 	}
 	
 	public void robotInit() {
-		_teleopCommand = new CommandByController();
+		_teleopCommand = new ArmAndDriveControl();
 		_autonomousCommand = new Patrol();
-		_robotArmCalculations = new RobotArmCalculations();
 		
 		//UI.getInstance().start();
 	}
@@ -43,7 +41,6 @@ public class Robot extends IterativeRobot {
 	
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		_robotArmCalculations.sendInfo();
 	}
 	
 	public void autonomousInit() {
@@ -61,7 +58,7 @@ public class Robot extends IterativeRobot {
 	
 	public void testInit() {
 		System.out.println("Start Test");
-		_testCommand = new CommandByController();
+		_testCommand = new ArmAndDriveControl();
 		_testCommand.start();
 		while(isTest() && isEnabled()) {
 			LiveWindow.run();

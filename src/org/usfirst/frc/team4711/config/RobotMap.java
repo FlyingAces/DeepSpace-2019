@@ -6,6 +6,9 @@ public class RobotMap {
 	public static final double SPEED_MULTIPLIER = 1.2;
 	
 	public static enum Talon {
+		WRIST_MOTOR(0),
+		ELBOW_MOTOR(0),
+		SHOULDER_MOTOR(0),
 		LEFT_FRONT(4),
 		LEFT_BACK(5),
 		RIGHT_FRONT(7),
@@ -29,9 +32,15 @@ public class RobotMap {
 		ROBOT_HEIGHT(15.5),
 		WHEEL_DIAMETER(6.00),
 		SHOULDER_SEGMENT_LENGTH(25.6),
+		SHOULDER_MAX_ANGLE(150.0),
+		SHOULDER_MIN_ANGLE(-150.0),
 		ELBOW_SEGMENT_LENGTH(29.0),
+		ELBOW_MAX_ANGLE(175.0),
+		ELBOW_MIN_ANGLE(-175.0),
 		HAND_HEIGHT(20.0),
-		HAND_WIDTH(12.0);
+		HAND_WIDTH(12.0),
+		WRIST_MAX_ANGLE(170.0),
+		WRIST_MIN_ANGLE(-170.0);
 		
 		private double _inches;
 		

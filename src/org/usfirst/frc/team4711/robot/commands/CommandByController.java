@@ -19,7 +19,7 @@ public class CommandByController extends Command{
 		requires(_drive);
 		
 		_controller = ControllerSubsystem.getInstance();
-		requires(_controller);
+		//requires(_controller);
 		
 		_camera = CameraSubsystem.getInstance();
 		requires(_camera);
