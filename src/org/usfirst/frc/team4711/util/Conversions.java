@@ -22,6 +22,14 @@ public class Conversions {
 		return inchToEncoderPosition(lengthOfArc);
 	}
 	
+	public static int encoderPositionToAngle(int encoderPosition) {
+		return (encoderPosition / 1024) / 4;
+	}
+	
+	public static int angleToEncoderPosition(int angle) {
+		return angle * 4 * 1024;
+	}
+	
 	public static double radianToDegree(double radian) {
 		return (radian * 180) / Math.PI;
 	}
