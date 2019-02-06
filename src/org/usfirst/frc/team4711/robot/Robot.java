@@ -5,6 +5,7 @@ import org.usfirst.frc.team4711.robot.commands.ArmAndDriveControl;
 import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.robot.commands.Patrol;
 import org.usfirst.frc.team4711.robot.ui.UI;
+import org.usfirst.frc.team4711.util.Feed;
 import org.usfirst.frc.team4711.util.RobotArmCalculations;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -22,6 +23,8 @@ public class Robot extends IterativeRobot {
 	private Command _testCommand;
 	
 	public Robot() {
+		Feed.getInstance().sendAngleInfo("angles", 0, 0, 0);
+		
 	}
 	
 	public void robotInit() {
