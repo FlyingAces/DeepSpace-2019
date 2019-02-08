@@ -23,15 +23,14 @@ public class Robot extends IterativeRobot {
 	private Command _testCommand;
 	
 	public Robot() {
-		Feed.getInstance().sendAngleInfo("angles", 0, 0, 0);
+		Feed.getInstance().sendAngleInfo("endAngles", 0.0, 0.0, 0.0);
+		Feed.getInstance().sendAngleInfo("currentAngles", 0.0, 0.0, 0.0);
 		
 	}
 	
 	public void robotInit() {
 		_teleopCommand = new ArmAndDriveControl();
 		_autonomousCommand = new Patrol();
-		
-		//UI.getInstance().start();
 	}
 
 	public void teleopInit() {

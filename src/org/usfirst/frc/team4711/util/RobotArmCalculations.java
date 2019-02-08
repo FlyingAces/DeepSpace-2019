@@ -32,9 +32,7 @@ public class RobotArmCalculations {
 		_isInverted = (_elbowAngle < 0);
 		_handState = handState;
 
-		// Angles so you do not forget.
-		
-		calculateAllAngles();
+		calculateWristTargetAndWristAngle();
 	}
 
 	private void calculateAllAngles() {

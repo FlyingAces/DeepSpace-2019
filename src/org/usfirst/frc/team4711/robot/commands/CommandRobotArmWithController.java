@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4711.robot.commands;
 
 import org.usfirst.frc.team4711.config.RobotMap;
+import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc.team4711.robot.subsystems.ControllerSubsystem;
 import org.usfirst.frc.team4711.util.Feed;
 import org.usfirst.frc.team4711.util.RobotArmCalculations;
@@ -8,8 +9,11 @@ import org.usfirst.frc.team4711.util.RobotArmCalculations;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class CommandRobotArmWithController extends Command {
+	private ArmSubsystem _arm;
 	private ControllerSubsystem _controller; 
 	private RobotArmCalculations _calculations;
+	private Feed _feed;
+	
 	private boolean _yButton;
 	private boolean _xButton;
 	private boolean _aButton;
@@ -18,20 +22,29 @@ public class CommandRobotArmWithController extends Command {
 	public CommandRobotArmWithController() {
 		super("CommandRobotArmWithController");
 		_controller = ControllerSubsystem.getInstance();
+		_arm = ArmSubsystem.getInstance();
+		requires(_arm);
+		_feed = Feed.getInstance();
 		
 
-		_calculations = new RobotArmCalculations(0.0,90.0,RobotArmCalculations.HandState.PLACE);
-		
+		_calculations = new RobotArmCalculations(_arm.getShoulderAngle(),
+												 _arm.getElbowAngle(), 
+												 _arm.getHandState());
 	}
 	
 	@Override
 	protected void initialize() {
-		Feed.getInstance().sendAngleInfo("angles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
 		_yButton = false;
 		_xButton = false;
 		_aButton = false;
 		_bButton = false;
-	
+		
+		_calculations = new RobotArmCalculations(_arm.getShoulderAngle(),
+				 _arm.getElbowAngle(), 
+				 _arm.getHandState());
+		
+		//_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
+		//_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
 	}
 	
 	@Override
@@ -65,7 +78,7 @@ public class CommandRobotArmWithController extends Command {
 		} else if(_xButton) {
 			_calculations.setWristTargetX(_calculations.getWristTargetX() - .5);
 		}
-		Feed.getInstance().sendAngleInfo("angles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
+		//_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
 	}
 	
 	@Override
