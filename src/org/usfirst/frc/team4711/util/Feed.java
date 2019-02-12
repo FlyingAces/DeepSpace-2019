@@ -46,5 +46,4 @@ public class Feed {
 		entry.setStringArray(buttonArray);
 
 	}
-	
 }

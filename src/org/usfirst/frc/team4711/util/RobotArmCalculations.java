@@ -121,18 +121,18 @@ public class RobotArmCalculations {
 	}
 
 	private double limitShoulderAngle(double angle) {
-		return (angle < 0) ? Math.max(RobotMap.Measurement.SHOULDER_MIN_ANGLE.getInches(), angle)
-				: Math.min(RobotMap.Measurement.SHOULDER_MAX_ANGLE.getInches(), angle);
+		return (angle < 0) ? Math.max(RobotMap.Angle.SHOULDER_MIN_ANGLE.getAngle(), angle)
+				: Math.min(RobotMap.Angle.SHOULDER_MAX_ANGLE.getAngle(), angle);
 	}
 
 	private double limitElbowAngle(double angle) {
-		return (angle < 0) ? Math.max(RobotMap.Measurement.ELBOW_MIN_ANGLE.getInches(), angle)
-				: Math.min(RobotMap.Measurement.ELBOW_MAX_ANGLE.getInches(), angle);
+		return (angle < 0) ? Math.max(RobotMap.Angle.ELBOW_MIN_ANGLE.getAngle(), angle)
+				: Math.min(RobotMap.Angle.ELBOW_MAX_ANGLE.getAngle(), angle);
 	}
 
 	private double limitWristAngle(double angle) {
-		return (angle < 0) ? Math.max(RobotMap.Measurement.WRIST_MIN_ANGLE.getInches(), angle)
-				: Math.min(RobotMap.Measurement.WRIST_MAX_ANGLE.getInches(), angle);
+		return (angle < 0) ? Math.max(RobotMap.Angle.WRIST_MIN_ANGLE.getAngle(), angle)
+				: Math.min(RobotMap.Angle.WRIST_MAX_ANGLE.getAngle(), angle);
 	}
 
 	public double getWristTargetX() {
@@ -154,8 +154,11 @@ public class RobotArmCalculations {
 			setShoulderAngle(relativeAtan2(getWristTargetY(), x));
 
 		} else {
-			_wristTargetX = x;
-			calculateAllAngles();
+			if(distance(x, getWristTargetY()) > 
+			Math.abs(RobotMap.Measurement.SHOULDER_SEGMENT_LENGTH.getInches() - RobotMap.Measurement.ELBOW_SEGMENT_LENGTH.getInches())) {
+				_wristTargetX = x;
+				calculateAllAngles();
+			}
 		}
 	}
 
@@ -169,8 +172,11 @@ public class RobotArmCalculations {
 			_elbowAngle = 0.0;
 			setShoulderAngle(relativeAtan2(y, getWristTargetX()));
 		} else {
-			_wristTargetY = y;
-			calculateAllAngles();
+			if(distance(getWristTargetX(), y) > 
+			Math.abs(RobotMap.Measurement.SHOULDER_SEGMENT_LENGTH.getInches() - RobotMap.Measurement.ELBOW_SEGMENT_LENGTH.getInches())) {
+				_wristTargetY = y;
+				calculateAllAngles();
+			}
 		}
 	}
 
@@ -189,7 +195,7 @@ public class RobotArmCalculations {
 
 	public void setElbowAngle(double angle) {
 		_elbowAngle = limitElbowAngle(angle);
-		_isInverted = (angle < 0);
+		
 		calculateWristTargetAndWristAngle();
 	}
 
