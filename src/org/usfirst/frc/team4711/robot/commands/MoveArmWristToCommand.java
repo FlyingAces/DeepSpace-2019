@@ -109,7 +109,8 @@ public class MoveArmWristToCommand extends Command {
 		_arm.setMotorSpeeds(0.0, 0.0, 0.0);
 		_arm.setHandState(_calculations.getHandState());
 		
-		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());		
+		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
+		_feed.sendString("currentHandState",  ArmSubsystem.getInstance().getHandState().toString());
 	}
 
 }

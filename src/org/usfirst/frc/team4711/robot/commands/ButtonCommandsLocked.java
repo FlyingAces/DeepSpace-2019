@@ -10,6 +10,9 @@ public class ButtonCommandsLocked extends CommandGroup {
 	public ButtonCommandsLocked(RobotMap.Controller controller) {
 		switch(controller) {
 		case TRIGGER_LB:
+			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X,
+													RobotMap.PLACE_START_Y));
+			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.PLACE));
 			break;
 		case TRIGGER_RB:
 			addSequential(new MoveArmWristToCommand(RobotMap.PICK_UP_START_X,

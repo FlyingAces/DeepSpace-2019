@@ -39,6 +39,7 @@ public class CommandRobotArmWithController extends Command {
 		_wristDir = 0.0;
 		
 		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
+		_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
 	}
 	
 	@Override
@@ -52,9 +53,9 @@ public class CommandRobotArmWithController extends Command {
 		
 		if(rightY > -.1 && rightY < .1)
 			rightY = 0.0;
-		
-		
-		if(hasAllAnglesFinished()) { 
+
+		if(hasAllAnglesFinished() || 
+		  (_shoulderDir == 0.0 &&_elbowDir == 0.0 && _wristDir == 0.0)) { 
 			_arm.setMotorSpeeds(0.0, 0.0, 0.0);
 
 			switch (ArmSubsystem.getInstance().getHandState()) {
@@ -71,19 +72,18 @@ public class CommandRobotArmWithController extends Command {
 
 				break;
 			case PICK_UP:
-				if (rightX > 0 && _calculations.getWristTargetX() < RobotMap.PICK_UP_MAX_EXTENSION_X)
-					_calculations.setWristTargetX(_calculations.getWristTargetX() + 1);
-				else if (rightX < 0 && _calculations.getWristTargetX() > RobotMap.PICK_UP_START_X)
-					_calculations.setWristTargetX(_calculations.getWristTargetX() - 1);
-
-				if (rightY < 0 && _calculations.getWristTargetX() >= RobotMap.PICK_UP_START_X)
+				if (rightY < 0)
 					_calculations.setWristTargetY(_calculations.getWristTargetY() + 1);
 				else if (rightY > 0 && 
-						_calculations.getWristTargetY() > RobotMap.PICK_UP_GROUND_LEVEL_Y && 
-						_calculations.getWristTargetX() >= RobotMap.PICK_UP_START_X)
+						_calculations.getWristTargetY() > RobotMap.PICK_UP_GROUND_LEVEL_Y)
 					_calculations.setWristTargetY(_calculations.getWristTargetY() - 1);
 				break;
 			case PLACE:
+				if (rightY < 0)
+					_calculations.setWristTargetY(_calculations.getWristTargetY() + 1);
+				else if (rightY > 0 && 
+						_calculations.getWristTargetY() > RobotMap.PLACE_START_Y)
+					_calculations.setWristTargetY(_calculations.getWristTargetY() - 1);
 				break;
 			}
 			

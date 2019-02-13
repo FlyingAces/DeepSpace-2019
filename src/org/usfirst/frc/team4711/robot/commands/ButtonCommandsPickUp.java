@@ -14,8 +14,8 @@ public class ButtonCommandsPickUp extends CommandGroup {
 			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.LOCKED));
 			break;
 		case TRIGGER_RB:
-			addSequential(new MoveArmWristToCommand(RobotMap.PICK_UP_START_X,
-												    RobotMap.PICK_UP_START_Y));
+			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X,
+													RobotMap.PLACE_START_Y));
 			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.PLACE));
 			break;
 		case X_BUTTON:

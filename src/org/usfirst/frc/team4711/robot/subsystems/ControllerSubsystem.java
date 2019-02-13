@@ -13,6 +13,9 @@ public class ControllerSubsystem extends Subsystem {
 	private JoystickButton _buttonTriggerRB;
 	private JoystickButton _buttonTriggerLB;
 	private JoystickButton _buttonX;
+	private JoystickButton _buttonY;
+	private JoystickButton _buttonB;
+	private JoystickButton _buttonA;
 	
 	private static ControllerSubsystem _instance;
 	
@@ -27,7 +30,15 @@ public class ControllerSubsystem extends Subsystem {
 		
 		_buttonX = new JoystickButton(_joystick, RobotMap.Controller.X_BUTTON.getChannel());
 		_buttonX.whenPressed(new ButtonConditionalCommands(RobotMap.Controller.X_BUTTON));
+	
+		_buttonY = new JoystickButton(_joystick, RobotMap.Controller.Y_BUTTON.getChannel());
+		_buttonY.whenPressed(new ButtonConditionalCommands(RobotMap.Controller.Y_BUTTON));
 		
+		_buttonB = new JoystickButton(_joystick, RobotMap.Controller.B_BUTTON.getChannel());
+		_buttonB.whenPressed(new ButtonConditionalCommands(RobotMap.Controller.B_BUTTON));
+		
+		_buttonA = new JoystickButton(_joystick, RobotMap.Controller.A_BUTTON.getChannel());
+		_buttonA.whenPressed(new ButtonConditionalCommands(RobotMap.Controller.A_BUTTON));
 	}
 	
 	@Override

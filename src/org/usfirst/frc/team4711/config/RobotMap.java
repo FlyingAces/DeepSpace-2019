@@ -108,6 +108,13 @@ public class RobotMap {
 
 	public static final double PICK_UP_START_X = RobotMap.ROBOT_FRONT_X + 10.0;
 	public static final double PICK_UP_START_Y = GROUND_LEVEL_Y + Measurement.HAND_WIDTH.getInches() + 15.0;
+	public static final double PLACE_START_X = RobotMap.ROBOT_FRONT_X;
+	public static final double PLACE_START_Y = RobotMap.GROUND_LEVEL_Y + 27.5 - 
+											   (RobotMap.Measurement.HAND_HEIGHT.getInches() - 6);
+	
+	public static final double DISK_LOW_POSITION_Y = RobotMap.PLACE_START_Y;
+	public static final double DISK_MIDDLE_POSITION_Y = RobotMap.DISK_LOW_POSITION_Y + 28;
+	public static final double DISK_HIGH_POSITION_Y = RobotMap.DISK_MIDDLE_POSITION_Y + 28;
 	
 	public static final double PICK_UP_MAX_EXTENSION_X = ROBOT_FRONT_X + 
 														 Measurement.MAX_EXTENSION.getInches() - 

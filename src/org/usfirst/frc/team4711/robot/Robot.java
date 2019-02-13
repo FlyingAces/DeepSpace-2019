@@ -4,6 +4,7 @@ package org.usfirst.frc.team4711.robot;
 import org.usfirst.frc.team4711.robot.commands.ArmAndDriveControl;
 import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.robot.commands.Patrol;
+import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc.team4711.robot.ui.UI;
 import org.usfirst.frc.team4711.util.Feed;
 import org.usfirst.frc.team4711.util.RobotArmCalculations;
@@ -23,9 +24,9 @@ public class Robot extends IterativeRobot {
 	private Command _testCommand;
 	
 	public Robot() {
-		Feed.getInstance().sendAngleInfo("endAngles", 0.0, 0.0, 0.0);
-		Feed.getInstance().sendAngleInfo("currentAngles", 0.0, 0.0, 0.0);
-		
+		Feed.getInstance().sendAngleInfo("currentAngles", ArmSubsystem.getInstance().getShoulderAngle(), ArmSubsystem.getInstance().getElbowAngle(), ArmSubsystem.getInstance().getWristAngle());
+		Feed.getInstance().sendAngleInfo("endAngles", ArmSubsystem.getInstance().getShoulderAngle(), ArmSubsystem.getInstance().getElbowAngle(), ArmSubsystem.getInstance().getWristAngle());
+		Feed.getInstance().sendString("currentHandState",  ArmSubsystem.getInstance().getHandState().toString());
 	}
 	
 	public void robotInit() {

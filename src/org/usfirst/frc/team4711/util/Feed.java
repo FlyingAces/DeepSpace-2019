@@ -46,4 +46,9 @@ public class Feed {
 		entry.setStringArray(buttonArray);
 
 	}
+	
+	public void sendString(String stringName, String value) {
+		NetworkTableEntry entry = _feed.getEntry(stringName);
+		entry.setString(value);
+	}
 }
