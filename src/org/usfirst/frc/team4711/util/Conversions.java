@@ -22,12 +22,20 @@ public class Conversions {
 		return inchToEncoderPosition(lengthOfArc);
 	}
 	
-	public static int encoderPositionToAngle(int encoderPosition) {
-		return (encoderPosition / 1024) / 4;
+	public static double shoulderAndElbowEncoderPositionToAngle(double position) {
+		return (position / (6.0 * 1024 * 4.0)) * 360.0 % 360.0;
 	}
 	
-	public static int angleToEncoderPosition(int angle) {
-		return angle * 4 * 1024;
+	public static double shoulderAndElbowAngleToEncoderPosition(double angle) {
+		return ((angle / 360.0) * (6.0 * 1024 * 4.0));
+	}
+	
+	public static double wristEncoderPositionToAngle(double encoderPosition) {
+		return (encoderPosition / ( 250.0 * 4.0 )) * 360.0 % 360.0;
+	}
+	
+	public static double wristAngleToEncoderPosition(double angle) {
+		return ((angle / 360.0) * (250.0 * 4.0));
 	}
 	
 	public static double radianToDegree(double radian) {

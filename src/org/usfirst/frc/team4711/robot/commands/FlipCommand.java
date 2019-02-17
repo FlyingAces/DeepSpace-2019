@@ -1,21 +1,24 @@
 package org.usfirst.frc.team4711.robot.commands;
 
-import org.usfirst.frc.team4711.robot.subsystems.ControllerSubsystem;
+import org.usfirst.frc.team4711.config.RobotMap;
+import org.usfirst.frc.team4711.util.RobotArmCalculations;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class FlipCommand extends Command {
-	private ControllerSubsystem _controller;
+public class FlipCommand extends CommandGroup {
+	public static enum Direction {
+		FORWARD, BACK;
+	}
 	
-	public FlipCommand() {
-		super("FlipCommand");
-		_controller = ControllerSubsystem.getInstance();
-	}
+	public FlipCommand(Direction direction) {
+		RobotArmCalculations calculations = new RobotArmCalculations(0.0, 0.0, RobotArmCalculations.HandState.LOCKED);
 
-	@Override
-	protected boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+		switch(direction) {
+		case FORWARD:
+			break;
+		case BACK:
+			break;
+		}
+			
 	}
-
 }

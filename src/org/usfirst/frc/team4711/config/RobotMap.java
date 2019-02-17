@@ -2,13 +2,10 @@ package org.usfirst.frc.team4711.config;
 
 public class RobotMap {
 	
-	
-	public static final double SPEED_MULTIPLIER = 1.2;
-	
 	public static enum Talon {
-		WRIST_MOTOR(0),
-		ELBOW_MOTOR(0),
-		SHOULDER_MOTOR(0),
+		SHOULDER_MOTOR(1),
+		ELBOW_MOTOR(2),
+		WRIST_MOTOR(3),
 		LEFT_FRONT(4),
 		LEFT_BACK(5),
 		RIGHT_FRONT(7),
@@ -51,13 +48,13 @@ public class RobotMap {
 	}
 	
 	public static enum Angle {
-		SHOULDER_START_ANGLE(0.0),
+		SHOULDER_START_ANGLE(130.0),
 		SHOULDER_MAX_ANGLE(150.0),
 		SHOULDER_MIN_ANGLE(-150.0),
-		ELBOW_START_ANGLE(140.0),
+		ELBOW_START_ANGLE(-170.0),
 		ELBOW_MAX_ANGLE(175.0),
 		ELBOW_MIN_ANGLE(-175.0),
-		WRIST_START_ANGLE(110.0),
+		WRIST_START_ANGLE(170.0),
 		WRIST_MAX_ANGLE(170.0),
 		WRIST_MIN_ANGLE(-170.0);
 		
@@ -69,6 +66,22 @@ public class RobotMap {
 		
 		public double getAngle() {
 			return _angle;
+		}
+	}
+	
+	public static enum Switch {
+		SHOULDER_ZERO(0),
+		ELBOW_ZERO(1),
+		WRIST_ZERO(2);
+				
+		private int _channel;
+		
+		private Switch(int channel) {
+			_channel = channel;
+		}
+		
+		public int getChannel() {
+			return _channel;
 		}
 	}
 	

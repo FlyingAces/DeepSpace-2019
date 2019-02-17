@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4711.robot.commands;
 
+import org.usfirst.frc.team4711.config.MotorSpeeds;
 import org.usfirst.frc.team4711.config.RobotMap;
 import org.usfirst.frc.team4711.robot.subsystems.CameraSubsystem;
 import org.usfirst.frc.team4711.robot.subsystems.ControllerSubsystem;
@@ -32,9 +33,9 @@ public class CommandByController extends Command{
 	
 	@Override
 	protected void execute() {
-    	double driveSpeed = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_RT.getChannel()) -
-    			_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_LT.getChannel()));
-		double driveAngle = RobotMap.SPEED_MULTIPLIER*(_controller.getController().getRawAxis(RobotMap.Controller.AXIS_LEFT_X.getChannel()));
+    	double driveSpeed = _controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_RT.getChannel()) -
+    			_controller.getController().getRawAxis(RobotMap.Controller.AXIS_TRIGGER_LT.getChannel());
+		double driveAngle = _controller.getController().getRawAxis(RobotMap.Controller.AXIS_LEFT_X.getChannel());
 
     	_drive.arcadeDrive(driveSpeed, driveAngle);
     }

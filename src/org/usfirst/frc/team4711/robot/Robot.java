@@ -24,8 +24,12 @@ public class Robot extends IterativeRobot {
 	private Command _testCommand;
 	
 	public Robot() {
-		Feed.getInstance().sendAngleInfo("currentAngles", ArmSubsystem.getInstance().getShoulderAngle(), ArmSubsystem.getInstance().getElbowAngle(), ArmSubsystem.getInstance().getWristAngle());
-		Feed.getInstance().sendAngleInfo("endAngles", ArmSubsystem.getInstance().getShoulderAngle(), ArmSubsystem.getInstance().getElbowAngle(), ArmSubsystem.getInstance().getWristAngle());
+		Feed.getInstance().sendAngleInfo("currentAngles", ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.SHOULDER), 
+														  ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.ELBOW), 
+														  ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.WRIST));
+		Feed.getInstance().sendAngleInfo("endAngles", ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.SHOULDER), 
+												      ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.ELBOW), 
+												      ArmSubsystem.getInstance().getAngle(ArmSubsystem.Angle.WRIST));
 		Feed.getInstance().sendString("currentHandState",  ArmSubsystem.getInstance().getHandState().toString());
 	}
 	

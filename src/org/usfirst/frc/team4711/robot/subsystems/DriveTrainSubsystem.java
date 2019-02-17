@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4711.robot.subsystems;
 
 import org.usfirst.frc.team4711.config.RobotMap;
+import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.config.MotorSpeeds;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -28,19 +29,14 @@ public class DriveTrainSubsystem extends Subsystem {
 		super("DriveTrain");
 		
 		_gyro = new ADXRS450_Gyro();
-		LiveWindow.addSensor("DriveTrain", "gyro", _gyro);
 		
 		WPI_TalonSRX leftMaster = new WPI_TalonSRX(RobotMap.Talon.LEFT_FRONT.getChannel());
-		LiveWindow.addActuator("DriveTrain", "leftSlave", leftMaster);
 		WPI_TalonSRX rightMaster = new WPI_TalonSRX(RobotMap.Talon.RIGHT_FRONT.getChannel());
-		LiveWindow.addActuator("DriveTrain", "rightSlave", rightMaster);
 		WPI_TalonSRX leftSlave = new WPI_TalonSRX(RobotMap.Talon.LEFT_BACK.getChannel());
-		LiveWindow.addActuator("DriveTrain", "leftMaster", leftSlave);
 		WPI_TalonSRX rightSlave = new WPI_TalonSRX(RobotMap.Talon.RIGHT_BACK.getChannel());
-		LiveWindow.addActuator("DriveTrain", "rightMaster", rightSlave);
 
-		 SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMaster, leftSlave);
-		 SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMaster, rightSlave);
+		SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMaster, leftSlave);
+		SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMaster, rightSlave);
 
 		_wheels = new DifferentialDrive(leftGroup, rightGroup);
 		_wheels.setSafetyEnabled(false);
@@ -107,8 +103,7 @@ public class DriveTrainSubsystem extends Subsystem {
 		
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
+		setDefaultCommand(new CommandByController());
 	}
 
 }

@@ -25,13 +25,13 @@ public class ButtonCommandsPlace extends CommandGroup {
 			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X, 0.0));
 			break;
 		case Y_BUTTON:
-			addSequential(new MoveArmWristToCommand(0.0, RobotMap.DISK_HIGH_POSITION_Y));
+			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.Y, RobotMap.DISK_HIGH_POSITION_Y));
 			break;
 		case B_BUTTON:
-			addSequential(new MoveArmWristToCommand(0.0, RobotMap.DISK_MIDDLE_POSITION_Y));
+			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.Y, RobotMap.DISK_MIDDLE_POSITION_Y));
 			break;
 		case A_BUTTON:
-			addSequential(new MoveArmWristToCommand(0.0, RobotMap.DISK_LOW_POSITION_Y));
+			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.Y, RobotMap.DISK_LOW_POSITION_Y));
 			break;
 		
 		}

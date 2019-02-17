@@ -1,24 +1,14 @@
 package org.usfirst.frc.team4711.robot.commands;
 
-import org.usfirst.frc.team4711.config.MotorSpeeds;
 import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
-import org.usfirst.frc.team4711.util.Feed;
 import org.usfirst.frc.team4711.util.RobotArmCalculations;
 import org.usfirst.frc.team4711.util.RobotArmCalculations.HandState;
 
-import edu.wpi.first.wpilibj.command.Command;
-
-public class MoveArmWristToCommand extends Command {
-	private ArmSubsystem _arm;
-	private RobotArmCalculations _calculations;
-	private Feed _feed;
+public class MoveArmWristToCommand extends MoveArmAnglesCommand {
+	public static double USE_CURRENT_LOCATION = Double.NaN;
 	
-	private double _shoulderDir;
-	private double _elbowDir;
-	private double _wristDir;
-	
-	private double _wristTargetX;
-	private double _wristTargetY;
+	protected double _wristTargetX;
+	protected double _wristTargetY;
 	
 	private HandState _handState;
 	
@@ -31,12 +21,7 @@ public class MoveArmWristToCommand extends Command {
 	}
 	
 	public MoveArmWristToCommand(double wristTargetX, double wristTargetY, HandState handState) {
-		super("MoveArmWristToCommand");
-		
-		_arm = ArmSubsystem.getInstance();
-		requires(_arm);
-		
-		_feed = Feed.getInstance();
+		super(0.0, 0.0, 0.0);
 		
 		_wristTargetX = wristTargetX;
 		_wristTargetY = wristTargetY;
@@ -46,71 +31,34 @@ public class MoveArmWristToCommand extends Command {
 	
 	@Override
 	protected void initialize() {
-		_calculations = new RobotArmCalculations(_arm.getShoulderAngle(),
-												 _arm.getElbowAngle(), 
+		RobotArmCalculations calculations = new RobotArmCalculations(_arm.getAngle(ArmSubsystem.Angle.SHOULDER),
+												 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
 												 _arm.getHandState());
-		_calculations.setWristAngle(_arm.getWristAngle());
-		_calculations.setInverted(_arm.isInverted());
+		calculations.setWristAngle(_arm.getAngle(ArmSubsystem.Angle.WRIST));
+		calculations.setInverted(_arm.isInverted());
 
-		if(_wristTargetX != 0.0) 
-			_calculations.setWristTargetX(_wristTargetX);
-		if(_wristTargetY != 0.0)
-			_calculations.setWristTargetY(_wristTargetY);
+		if(!Double.isNaN(_wristTargetX)) 
+			calculations.setWristTargetX(_wristTargetX);
+		if(!Double.isNaN(_wristTargetY))
+			calculations.setWristTargetY(_wristTargetY);
 		
 		if(_handState != null)
-			_calculations.setHandState(_handState);
+			calculations.setHandState(_handState);
 		
-		_shoulderDir = (_calculations.getShoulderAngle() == _arm.getShoulderAngle())? 0.0 : 
-					   (_calculations.getShoulderAngle() > _arm.getShoulderAngle())? 1.0 : -1.0;
-		_elbowDir = (_calculations.getElbowAngle() == _arm.getElbowAngle())? 0.0 :
-					(_calculations.getElbowAngle() > _arm.getElbowAngle())? 1.0 : -1.0;
-		_wristDir = (_calculations.getWristAngle() == _arm.getWristAngle()) ? 0.0 : 
-					(_calculations.getWristAngle() > _arm.getWristAngle()) ? 1.0 : -1.0;
+		_shoulderValue = calculations.getShoulderAngle();
+		_elbowValue = calculations.getElbowAngle();
+		_wristValue = calculations.getWristAngle();
 		
-		_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
-	}
-	
-	@Override
-	protected void execute() {
-		double diffShoulderAngle = Math.abs(_calculations.getShoulderAngle() - _arm.getShoulderAngle());
-		double diffElbowAngle = Math.abs(_calculations.getElbowAngle() - _arm.getElbowAngle());
-		double diffWristAngle = Math.abs(_calculations.getWristAngle() - _arm.getWristAngle());
-		
-		double shoulderSpeed = 1.0;
-		double elbowSpeed = 1.0;
-		double wristSpeed = 1.0;
-		
-		if(diffElbowAngle < diffShoulderAngle && diffWristAngle < diffShoulderAngle) {
-			elbowSpeed = diffElbowAngle / diffShoulderAngle;
-			wristSpeed = diffWristAngle / diffShoulderAngle;
-		} else if(diffShoulderAngle < diffElbowAngle && diffWristAngle < diffElbowAngle) {
-			shoulderSpeed = diffShoulderAngle / diffElbowAngle;
-			wristSpeed = diffWristAngle / diffElbowAngle;
-		} else {
-			shoulderSpeed = diffShoulderAngle / diffWristAngle;
-			elbowSpeed = diffElbowAngle / diffWristAngle;
-		}
-		
-		_arm.setMotorSpeeds(_shoulderDir * shoulderSpeed * MotorSpeeds.SHOULDER_MOTOR_SPEED, 
-						    _elbowDir * elbowSpeed * MotorSpeeds.ELBOW_MOTOR_SPEED, 
-				            _wristDir * wristSpeed * MotorSpeeds.WRIST_MOTOR_SPEED);
-		    
-		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
+		super.initialize();
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return 	((_shoulderDir < 0)? _arm.getShoulderAngle() <= _calculations.getShoulderAngle() : _arm.getShoulderAngle() >= _calculations.getShoulderAngle()) &&
-				((_elbowDir < 0)? _arm.getElbowAngle() <= _calculations.getElbowAngle() : _arm.getElbowAngle() >= _calculations.getElbowAngle()) &&
-				((_wristDir < 0)? _arm.getWristAngle() <= _calculations.getWristAngle() : _arm.getWristAngle() >= _calculations.getWristAngle());}
-	
-	@Override
 	protected void end() {
-		_arm.setMotorSpeeds(0.0, 0.0, 0.0);
-		_arm.setHandState(_calculations.getHandState());
-		
-		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
-		_feed.sendString("currentHandState",  ArmSubsystem.getInstance().getHandState().toString());
+		super.end();
+		if(_handState != null) {
+			_arm.setHandState(_handState);
+			_feed.sendString("currentHandState",  ArmSubsystem.getInstance().getHandState().toString());
+		}
 	}
 
 }

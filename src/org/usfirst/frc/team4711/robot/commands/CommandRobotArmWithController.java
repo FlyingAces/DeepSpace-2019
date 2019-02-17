@@ -29,17 +29,21 @@ public class CommandRobotArmWithController extends Command {
 	
 	@Override
 	protected void initialize() {
-		_calculations = new RobotArmCalculations(_arm.getShoulderAngle(), 
-												 _arm.getElbowAngle(), 
+		_calculations = new RobotArmCalculations(_arm.getAngle(ArmSubsystem.Angle.SHOULDER), 
+												 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
 												 _arm.getHandState());
-		_calculations.setWristAngle(_arm.getWristAngle());
+		_calculations.setWristAngle(_arm.getAngle(ArmSubsystem.Angle.WRIST));
 		
 		_shoulderDir = 0.0;
 		_elbowDir = 0.0;
 		_wristDir = 0.0;
 		
-		_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
-		_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
+		_feed.sendAngleInfo("currentAngles", _arm.getAngle(ArmSubsystem.Angle.SHOULDER), 
+											 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
+											 _arm.getAngle(ArmSubsystem.Angle.WRIST));
+		_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), 
+										 _calculations.getElbowAngle(), 
+										 _calculations.getWristAngle());
 	}
 	
 	@Override
@@ -72,35 +76,52 @@ public class CommandRobotArmWithController extends Command {
 
 				break;
 			case PICK_UP:
-				if (rightY < 0)
-					_calculations.setWristTargetY(_calculations.getWristTargetY() + 1);
-				else if (rightY > 0 && 
+				if (rightY < 0) {
+					double tempX = _calculations.getWristTargetX();
+					double tempY = _calculations.getWristTargetY();
+					
+					_calculations.setWristTargetY(tempY + 1);
+					if(tempX != _calculations.getWristTargetX()) {
+						_calculations.setWristTargetY(tempY);
+						_calculations.setWristTargetX(tempX);
+					}
+				}else if (rightY > 0 && 
 						_calculations.getWristTargetY() > RobotMap.PICK_UP_GROUND_LEVEL_Y)
 					_calculations.setWristTargetY(_calculations.getWristTargetY() - 1);
 				break;
 			case PLACE:
-				if (rightY < 0)
+				if (rightY < 0) {
+					double tempX = _calculations.getWristTargetX();
+					double tempY = _calculations.getWristTargetY();
+					
+					_calculations.setWristTargetY(tempY + 1);
+					if(tempX != _calculations.getWristTargetX()) {
+						_calculations.setWristTargetY(tempY);
+						_calculations.setWristTargetX(tempX);
+					}
 					_calculations.setWristTargetY(_calculations.getWristTargetY() + 1);
-				else if (rightY > 0 && 
+				} else if (rightY > 0 && 
 						_calculations.getWristTargetY() > RobotMap.PLACE_START_Y)
 					_calculations.setWristTargetY(_calculations.getWristTargetY() - 1);
 				break;
 			}
 			
 			if(rightX != 0 || rightY != 0) {
-				_shoulderDir = (_calculations.getShoulderAngle() == _arm.getShoulderAngle()) ? 0.0
-						: (_calculations.getShoulderAngle() > _arm.getShoulderAngle()) ? 1.0 : -1.0;
-				_elbowDir = (_calculations.getElbowAngle() == _arm.getElbowAngle()) ? 0.0
-						: (_calculations.getElbowAngle() > _arm.getElbowAngle()) ? 1.0 : -1.0;
-				_wristDir = (_calculations.getWristAngle() == _arm.getWristAngle()) ? 0.0
-						: (_calculations.getWristAngle() > _arm.getWristAngle()) ? 1.0 : -1.0;
+				_shoulderDir = (_calculations.getShoulderAngle() == _arm.getAngle(ArmSubsystem.Angle.SHOULDER)) ? 0.0
+						: (_calculations.getShoulderAngle() > _arm.getAngle(ArmSubsystem.Angle.SHOULDER)) ? 1.0 : -1.0;
+				_elbowDir = (_calculations.getElbowAngle() == _arm.getAngle(ArmSubsystem.Angle.ELBOW)) ? 0.0
+						: (_calculations.getElbowAngle() > _arm.getAngle(ArmSubsystem.Angle.ELBOW)) ? 1.0 : -1.0;
+				_wristDir = (_calculations.getWristAngle() == _arm.getAngle(ArmSubsystem.Angle.WRIST)) ? 0.0
+						: (_calculations.getWristAngle() > _arm.getAngle(ArmSubsystem.Angle.WRIST)) ? 1.0 : -1.0;
 	
-				_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), _calculations.getElbowAngle(), _calculations.getWristAngle());
+				_feed.sendAngleInfo("endAngles", _calculations.getShoulderAngle(), 
+												 _calculations.getElbowAngle(), 
+												 _calculations.getWristAngle());
 			}
 		} else {
-			double diffShoulderAngle = Math.abs(_calculations.getShoulderAngle() - _arm.getShoulderAngle());
-			double diffElbowAngle = Math.abs(_calculations.getElbowAngle() - _arm.getElbowAngle());
-			double diffWristAngle = Math.abs(_calculations.getWristAngle() - _arm.getWristAngle());
+			double diffShoulderAngle = Math.abs(_calculations.getShoulderAngle() - _arm.getAngle(ArmSubsystem.Angle.SHOULDER));
+			double diffElbowAngle = Math.abs(_calculations.getElbowAngle() - _arm.getAngle(ArmSubsystem.Angle.ELBOW));
+			double diffWristAngle = Math.abs(_calculations.getWristAngle() - _arm.getAngle(ArmSubsystem.Angle.WRIST));
 			
 			double speed = Math.max(Math.max(Math.abs(0 - rightX), Math.abs(0 - rightY)), .1);
 
@@ -119,11 +140,13 @@ public class CommandRobotArmWithController extends Command {
 				elbowSpeed *= diffElbowAngle / diffWristAngle;
 			}
 			
-			_arm.setMotorSpeeds(_shoulderDir * shoulderSpeed * MotorSpeeds.SHOULDER_MOTOR_SPEED, 
-								_elbowDir * elbowSpeed * MotorSpeeds.ELBOW_MOTOR_SPEED, 
-								_wristDir * wristSpeed * MotorSpeeds.WRIST_MOTOR_SPEED);
+			_arm.setMotorSpeeds(_shoulderDir * shoulderSpeed, 
+								_elbowDir * elbowSpeed, 
+								_wristDir * wristSpeed);
 			
-			_feed.sendAngleInfo("currentAngles", _arm.getShoulderAngle(), _arm.getElbowAngle(), _arm.getWristAngle());
+			_feed.sendAngleInfo("currentAngles", _arm.getAngle(ArmSubsystem.Angle.SHOULDER), 
+												 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
+												 _arm.getAngle(ArmSubsystem.Angle.WRIST));
 		}
 	}
 	
@@ -134,9 +157,10 @@ public class CommandRobotArmWithController extends Command {
 	}
 	
 	private boolean hasAllAnglesFinished() {
-		return ((_shoulderDir < 0)? _arm.getShoulderAngle() <= _calculations.getShoulderAngle() : _arm.getShoulderAngle() >= _calculations.getShoulderAngle()) &&
-			   ((_elbowDir < 0)? _arm.getElbowAngle() <= _calculations.getElbowAngle() : _arm.getElbowAngle() >= _calculations.getElbowAngle()) &&
-			   ((_wristDir < 0)? _arm.getWristAngle() <= _calculations.getWristAngle() : _arm.getWristAngle() >= _calculations.getWristAngle());
+		return ((_shoulderDir < 0)? _arm.getAngle(ArmSubsystem.Angle.SHOULDER) <= _calculations.getShoulderAngle() : _arm.getAngle(ArmSubsystem.Angle.SHOULDER) >= _calculations.getShoulderAngle()) &&
+			   ((_elbowDir < 0)? _arm.getAngle(ArmSubsystem.Angle.ELBOW) <= _calculations.getElbowAngle() : _arm.getAngle(ArmSubsystem.Angle.ELBOW) >= _calculations.getElbowAngle()) &&
+			   ((_wristDir < 0)? _arm.getAngle(ArmSubsystem.Angle.WRIST) <= _calculations.getWristAngle() : _arm.getAngle(ArmSubsystem.Angle.WRIST)
+			   >= _calculations.getWristAngle());
 	}
 
 }
