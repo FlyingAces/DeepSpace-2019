@@ -2,12 +2,9 @@
 package org.usfirst.frc.team4711.robot;
 
 import org.usfirst.frc.team4711.robot.commands.ArmAndDriveControl;
-import org.usfirst.frc.team4711.robot.commands.CommandByController;
 import org.usfirst.frc.team4711.robot.commands.Patrol;
 import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
-import org.usfirst.frc.team4711.robot.ui.UI;
 import org.usfirst.frc.team4711.util.Feed;
-import org.usfirst.frc.team4711.util.RobotArmCalculations;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,8 +32,9 @@ public class Robot extends IterativeRobot {
 	
 	public void robotInit() {
 		_teleopCommand = new ArmAndDriveControl();
-		_autonomousCommand = new Patrol();
+		_autonomousCommand = new ArmAndDriveControl();
 	}
+	
 
 	public void teleopInit() {
 		if(_autonomousCommand != null) 

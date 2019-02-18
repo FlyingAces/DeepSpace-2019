@@ -11,6 +11,10 @@ public class MoveArmAnglesCommand extends Command {
 	protected ArmSubsystem _arm;
 	protected Feed _feed;
 	
+	protected double _shoulderValueParam;
+	protected double _elbowValueParam;
+	protected double _wristValueParam;
+	
 	protected double _shoulderValue;
 	protected double _elbowValue;
 	protected double _wristValue;
@@ -18,6 +22,8 @@ public class MoveArmAnglesCommand extends Command {
 	protected double _shoulderDir;
 	protected double _elbowDir;
 	protected double _wristDir;
+	
+	protected double _speedMultiplier;
 	
 	public MoveArmAnglesCommand(double shoulderValue, double elbowValue, double wristValue) {
 		super("MoveArmAnglesCommand");
@@ -27,16 +33,18 @@ public class MoveArmAnglesCommand extends Command {
 		
 		_feed = Feed.getInstance();
 		
-		_shoulderValue = shoulderValue;
-		_elbowValue = elbowValue;
-		_wristValue = wristValue;
+		_shoulderValueParam = shoulderValue;
+		_elbowValueParam = elbowValue;
+		_wristValueParam = wristValue;
+		
+		_speedMultiplier = 1.0;
 	}
 	
 	@Override
 	protected void initialize() {
-		_shoulderValue = (Double.isNaN(_shoulderValue))? _arm.getAngle(ArmSubsystem.Angle.SHOULDER) : _shoulderValue;
-		_elbowValue = (Double.isNaN(_elbowValue))? _arm.getAngle(ArmSubsystem.Angle.ELBOW) : _elbowValue;
-		_wristValue = (Double.isNaN(_wristValue))? _arm.getAngle(ArmSubsystem.Angle.WRIST) : _wristValue;
+		_shoulderValue = (Double.isNaN(_shoulderValueParam))? _arm.getAngle(ArmSubsystem.Angle.SHOULDER) : _shoulderValueParam;
+		_elbowValue = (Double.isNaN(_elbowValueParam))? _arm.getAngle(ArmSubsystem.Angle.ELBOW) : _elbowValueParam;
+		_wristValue = (Double.isNaN(_wristValueParam))? _arm.getAngle(ArmSubsystem.Angle.WRIST) : _wristValueParam;
 		
 		_shoulderDir = (_shoulderValue == _arm.getAngle(ArmSubsystem.Angle.SHOULDER))? 0.0 : 
 					   (_shoulderValue > _arm.getAngle(ArmSubsystem.Angle.SHOULDER))? 1.0 : -1.0;
@@ -64,14 +72,14 @@ public class MoveArmAnglesCommand extends Command {
 		} else if(diffShoulderAngle < diffElbowAngle && diffWristAngle < diffElbowAngle) {
 			shoulderSpeed = diffShoulderAngle / diffElbowAngle;
 			wristSpeed = diffWristAngle / diffElbowAngle;
-		} else {
+		} else if(diffShoulderAngle < diffWristAngle && diffElbowAngle < diffWristAngle){
 			shoulderSpeed = diffShoulderAngle / diffWristAngle;
 			elbowSpeed = diffElbowAngle / diffWristAngle;
 		}
 		
-		_arm.setMotorSpeeds(_shoulderDir * shoulderSpeed, 
-						    _elbowDir * elbowSpeed, 
-				            _wristDir * wristSpeed);
+		_arm.setMotorSpeeds(_shoulderDir * _speedMultiplier * shoulderSpeed, 
+						    _elbowDir * _speedMultiplier * elbowSpeed, 
+				            _wristDir * _speedMultiplier * wristSpeed);
 		    
 		_feed.sendAngleInfo("currentAngles", _arm.getAngle(ArmSubsystem.Angle.SHOULDER), _arm.getAngle(ArmSubsystem.Angle.ELBOW), _arm.getAngle(ArmSubsystem.Angle.WRIST));
 	}
@@ -97,6 +105,10 @@ public class MoveArmAnglesCommand extends Command {
 		_feed.sendAngleInfo("currentAngles", _arm.getAngle(ArmSubsystem.Angle.SHOULDER), 
 											 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
 											 _arm.getAngle(ArmSubsystem.Angle.WRIST));
+	}
+	
+	public void setSpeedMultiplier(double value) {
+		_speedMultiplier = value;
 	}
 
 }

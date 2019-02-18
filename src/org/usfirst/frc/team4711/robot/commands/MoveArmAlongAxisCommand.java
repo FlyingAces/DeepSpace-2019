@@ -1,6 +1,9 @@
 package org.usfirst.frc.team4711.robot.commands;
 
-public class MoveArmAlongAxisCommand extends MoveArmWristToCommand {
+import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc.team4711.util.RobotArmCalculations;
+
+public class MoveArmAlongAxisCommand extends MoveArmAnglesCommand {
 	public static enum Axis {
 		X, Y;
 	}
@@ -10,36 +13,45 @@ public class MoveArmAlongAxisCommand extends MoveArmWristToCommand {
 	protected double _dir;
 	
 	public MoveArmAlongAxisCommand(Axis axis, double endLoc) {
-		super(MoveArmWristToCommand.USE_CURRENT_LOCATION, MoveArmWristToCommand.USE_CURRENT_LOCATION);
+		super(0.0, 0.0, 0.0);
 		
 		_axis = axis;
 		_endLoc = endLoc;
+		_dir = 0.0;
+	}
+	
+	private double updateToNextStep(double curr) {
+		curr += _dir;
+		if((_dir < 0.0)? curr < _endLoc : curr > _endLoc)
+			curr = _endLoc;
+		
+		return curr;
 	}
 	
 	@Override
 	protected void initialize() {
+		RobotArmCalculations calculations = new RobotArmCalculations(_arm.getAngle(ArmSubsystem.Angle.SHOULDER),
+																	 _arm.getAngle(ArmSubsystem.Angle.ELBOW), 
+																	 _arm.getHandState());
+		calculations.setWristAngle(_arm.getAngle(ArmSubsystem.Angle.WRIST));
+		calculations.setInverted(_arm.isInverted());
+		
 		switch(_axis) {
 		case X:
-			_wristTargetX = _arm.getWristTargetX();
-			
-			_dir = (_endLoc == _wristTargetX)? 0.0 : 
-				   (_endLoc > _wristTargetX)? 1.0 : -1.0;
-			
-			_wristTargetX = _wristTargetX + _dir;
-			if((_dir < 0.0)? _wristTargetX < _endLoc : _wristTargetX > _endLoc)
-				_wristTargetX = _endLoc;
+			_dir = (_endLoc == _arm.getWristTargetX())? 0.0 : 
+		   		   (_endLoc > _arm.getWristTargetX())? 1.0 : -1.0;
+			calculations.setWristTargetX(updateToNextStep(_arm.getWristTargetX()));
 			break;
 		case Y:
-			_wristTargetY = _arm.getWristTargetY();
-			
-			_dir = (_endLoc == _wristTargetY)? 0.0 : 
-				   (_endLoc > _wristTargetY)? 1.0 : -1.0;
-			
-			_wristTargetY = _wristTargetY + _dir;
-			if((_dir < 0.0)? _wristTargetY < _endLoc : _wristTargetY > _endLoc)
-				_wristTargetY = _endLoc;
+			_dir = (_endLoc == _arm.getWristTargetY())? 0.0 : 
+		   		   (_endLoc > _arm.getWristTargetY())? 1.0 : -1.0;
+			calculations.setWristTargetY(updateToNextStep(_arm.getWristTargetY()));
 			break;
 		}
+
+		_shoulderValueParam = calculations.getShoulderAngle();
+		_elbowValueParam = calculations.getElbowAngle();
+		_wristValueParam = calculations.getWristAngle();
 
 		super.initialize();
 	}
@@ -48,24 +60,17 @@ public class MoveArmAlongAxisCommand extends MoveArmWristToCommand {
 	protected boolean isFinished() {
 		switch(_axis) {
 		case X:
-			if(super.isFinished() && _wristTargetX == _endLoc)
+			if(super.isFinished() && ((_dir < 0)? _arm.getWristTargetX() <= _endLoc : _arm.getWristTargetX() >= _endLoc))
 				return true;
 			else if(super.isFinished()) {
-				_wristTargetX = _wristTargetX + _dir;
-				if((_dir < 0.0)? _wristTargetX < _endLoc : _wristTargetX > _endLoc)
-					_wristTargetX = _endLoc;
-				
-				super.initialize();
+				initialize();
 			}
+			break;
 		case Y:
-			if(super.isFinished() && _wristTargetY == _endLoc)
+			if(super.isFinished() && ((_dir < 0)? _arm.getWristTargetY() <= _endLoc : _arm.getWristTargetY() >= _endLoc))
 				return true;
 			else if(super.isFinished()) {
-				_wristTargetY = _wristTargetY + _dir;
-				if((_dir < 0.0)? _wristTargetY < _endLoc : _wristTargetY > _endLoc)
-					_wristTargetY = _endLoc;
-				
-				super.initialize();
+				initialize();
 			}
 			break;
 		}

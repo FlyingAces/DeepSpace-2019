@@ -5,22 +5,51 @@ import org.usfirst.frc.team4711.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc.team4711.util.RobotArmCalculations;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class ButtonCommandsLocked extends CommandGroup {
 	public ButtonCommandsLocked(RobotMap.Controller controller) {
 		switch(controller) {
 		case TRIGGER_LB:
-			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X,
-													RobotMap.PLACE_START_Y));
-			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.PLACE));
+			addSequential(
+					new ConditionalCommand(
+							new ChangeHandStateCommand(RobotArmCalculations.HandState.PLACE), 
+							new WaitCommand(.01)) {
+
+							@Override
+							protected boolean condition() {
+								return !ArmSubsystem.getInstance().isInverted();
+							}
+							
+					});
 			break;
 		case TRIGGER_RB:
-			addSequential(new MoveArmWristToCommand(RobotMap.PICK_UP_START_X,
-				    								RobotMap.PICK_UP_START_Y,
-				    								RobotArmCalculations.HandState.LOCKED));
-			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.PICK_UP));
+			addSequential(
+					new ConditionalCommand(
+							new ChangeHandStateCommand(RobotArmCalculations.HandState.PICK_UP), 
+							new WaitCommand(.01)) {
+
+							@Override
+							protected boolean condition() {
+								return !ArmSubsystem.getInstance().isInverted();
+							}
+							
+					});
 			break;
-		
+		case X_BUTTON:
+			addSequential(
+					new ConditionalCommand(
+							new FlipCommand(FlipCommand.Direction.FORWARD), 
+							new FlipCommand(FlipCommand.Direction.BACK)) {
+
+							@Override
+							protected boolean condition() {
+								return ArmSubsystem.getInstance().isInverted();
+							}
+							
+					});
+			break;
 		}
 	}
 }

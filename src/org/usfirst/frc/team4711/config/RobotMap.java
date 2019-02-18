@@ -34,7 +34,8 @@ public class RobotMap {
 		ELBOW_SEGMENT_LENGTH(35.0),
 		HAND_HEIGHT(20.0),
 		HAND_WIDTH(12.0),
-		MAX_EXTENSION(30.0);
+		MAX_EXTENSION(30.0),
+		MAX_STEP_HEIGHT(19.0);
 		
 		private double _inches;
 		
@@ -114,16 +115,33 @@ public class RobotMap {
 	
 	public static final double ROBOT_FRONT_X = Measurement.ROBOT_LENGTH.getInches() - 
 											   Measurement.BASE_CONNECTION.getInches();
+	public static final double ROBOT_MAX_FRONT_X = ROBOT_FRONT_X +
+												   Measurement.MAX_EXTENSION.getInches();
 	public static final double ROBOT_BACK_X = -Measurement.BASE_CONNECTION.getInches();
+	public static final double ROBOT_MIN_BACK_X = ROBOT_BACK_X -
+												  Measurement.MAX_EXTENSION.getInches();
 	
 	public static final double GROUND_LEVEL_Y = -(Measurement.BASE_SEGMENT_LENGTH.getInches() + 
-												  Measurement.ROBOT_HEIGHT.getInches()); 
+												  Measurement.ROBOT_HEIGHT.getInches());
+	public static final double MAX_STEP_DOWN_Y = GROUND_LEVEL_Y - 
+												 Measurement.MAX_STEP_HEIGHT.getInches();
+	public static final double MAX_EXTENSION_HEIGHT_BACK_Y = Math.sqrt(((Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0) * 
+			  															(Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0)) -
+																	   ((ROBOT_MIN_BACK_X) * (ROBOT_MIN_BACK_X)));
+	public static final double MAX_EXTENSION_HEIGHT_FRONT_Y = Math.sqrt(((Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0) * 
+			  															(Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0)) -
+																	   ((ROBOT_MAX_FRONT_X) * (ROBOT_MAX_FRONT_X)));
 
-	public static final double PICK_UP_START_X = RobotMap.ROBOT_FRONT_X + 10.0;
+	public static final double PICK_UP_START_X = ROBOT_FRONT_X + 10.0;
 	public static final double PICK_UP_START_Y = GROUND_LEVEL_Y + Measurement.HAND_WIDTH.getInches() + 15.0;
+	public static final double PICK_UP_MAX_HEIGHT_Y = PICK_UP_START_Y;
+	
 	public static final double PLACE_START_X = RobotMap.ROBOT_FRONT_X;
 	public static final double PLACE_START_Y = RobotMap.GROUND_LEVEL_Y + 27.5 - 
 											   (RobotMap.Measurement.HAND_HEIGHT.getInches() - 6);
+	public static final double PLACE_MAX_HEIGHT_Y = Math.sqrt(((Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0) * 
+															   (Measurement.SHOULDER_SEGMENT_LENGTH.getInches() + Measurement.ELBOW_SEGMENT_LENGTH.getInches() - 1.0)) -
+															  ((PLACE_START_X) * (PLACE_START_X)));
 	
 	public static final double DISK_LOW_POSITION_Y = RobotMap.PLACE_START_Y;
 	public static final double DISK_MIDDLE_POSITION_Y = RobotMap.DISK_LOW_POSITION_Y + 28;

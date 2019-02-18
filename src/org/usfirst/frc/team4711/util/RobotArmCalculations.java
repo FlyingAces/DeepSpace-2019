@@ -195,7 +195,7 @@ public class RobotArmCalculations {
 
 	public void setElbowAngle(double angle) {
 		_elbowAngle = limitElbowAngle(angle);
-		
+		_isInverted = _elbowAngle < 0.0;
 		calculateWristTargetAndWristAngle();
 	}
 

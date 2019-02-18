@@ -17,7 +17,7 @@ public class MoveArmWristToCommand extends MoveArmAnglesCommand {
 	}
 	
 	public MoveArmWristToCommand(HandState handState) {
-		this(0.0, 0.0, handState);
+		this(USE_CURRENT_LOCATION, USE_CURRENT_LOCATION, handState);
 	}
 	
 	public MoveArmWristToCommand(double wristTargetX, double wristTargetY, HandState handState) {
@@ -45,9 +45,9 @@ public class MoveArmWristToCommand extends MoveArmAnglesCommand {
 		if(_handState != null)
 			calculations.setHandState(_handState);
 		
-		_shoulderValue = calculations.getShoulderAngle();
-		_elbowValue = calculations.getElbowAngle();
-		_wristValue = calculations.getWristAngle();
+		_shoulderValueParam = calculations.getShoulderAngle();
+		_elbowValueParam = calculations.getElbowAngle();
+		_wristValueParam = calculations.getWristAngle();
 		
 		super.initialize();
 	}

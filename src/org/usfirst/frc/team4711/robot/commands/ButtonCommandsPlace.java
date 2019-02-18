@@ -11,18 +11,15 @@ public class ButtonCommandsPlace extends CommandGroup {
 	public ButtonCommandsPlace(RobotMap.Controller controller) {
 		switch(controller) {
 		case TRIGGER_LB:
-			addSequential(new MoveArmWristToCommand(RobotMap.PICK_UP_START_X,
-					RobotMap.PICK_UP_START_Y,
-					RobotArmCalculations.HandState.LOCKED));
-			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.PICK_UP));
+			addSequential(new ChangeHandStateCommand(RobotArmCalculations.HandState.PICK_UP));
 			break;
 		case TRIGGER_RB:
-			addSequential(new MoveArmWristToCommand(RobotArmCalculations.HandState.LOCKED));
+			addSequential(new ChangeHandStateCommand(RobotArmCalculations.HandState.LOCKED));
 			break;
 		case X_BUTTON:
-			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X + 5, 0.0));
+			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.X, RobotMap.PLACE_START_X + 1.0));
 			addSequential(new WaitCommand(0.5));
-			addSequential(new MoveArmWristToCommand(RobotMap.PLACE_START_X, 0.0));
+			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.X, RobotMap.PLACE_START_X));
 			break;
 		case Y_BUTTON:
 			addSequential(new MoveArmAlongAxisCommand(MoveArmAlongAxisCommand.Axis.Y, RobotMap.DISK_HIGH_POSITION_Y));
